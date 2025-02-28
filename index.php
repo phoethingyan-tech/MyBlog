@@ -2,12 +2,31 @@
     include "Layouts/navbar.php";
     include "dbconnect.php";
 
-    $sql = "SELECT * FROM posts ORDER BY id DESC";
-    // $stmt = $conn->query($sql);
-    $stmt = $conn->prepare($sql);  //Query Check
-    $stmt->execute();  
-    $posts = $stmt->fetchAll();   //DATA Output
-    // var_dump($posts);  //Print
+
+    // sorting လုပ်ဖို့အတွက် CID မှာ Data ပါခဲ့ရင်နဲ့ မပါခဲ့ရင်ကို ခွဲပြီး ထုတ်ပေးတာပါ
+
+    if(isset($_GET['c_id'])) {
+        $c_id = $_GET['c_id'];
+        $sql = "SELECT * FROM posts WHERE category_id = :c_id";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':c_id',$c_id);
+        $stmt->execute();
+        $posts = $stmt->fetchAll();
+    } else {    
+        // $sql = "SELECT * FROM posts ORDER BY id DESC";
+        $sql = "SELECT * FROM posts WHERE id < (SELECT MAX(id) FROM posts) ORDER BY id DESC";
+        // $stmt = $conn->query($sql);
+        $stmt = $conn->prepare($sql);  //Query Check
+        $stmt->execute();  
+        $posts = $stmt->fetchAll();   //DATA Output
+        // var_dump($posts);  //Print
+
+
+        $sql = "SELECT * FROM posts ORDER BY id DESC LIMIT 1";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $feature_post = $stmt->fetch();
+    }
 
 ?>
         <!-- Page header with logo and tagline-->
@@ -24,16 +43,24 @@
             <div class="row">
                 <!-- Blog entries-->
                 <div class="col-lg-8">
+                    <?php 
+                        if(isset($_GET['c_id'])) {
+
+                        }else {                            
+                    ?>
                     <!-- Featured blog post-->
                     <div class="card mb-4">
-                        <a href="#!"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                        <a href="#!"><img class="card-img-top" src="<?= $feature_post['image']?>" alt="..." /></a>
                         <div class="card-body">
-                            <div class="small text-muted">January 1, 2023</div>
-                            <h2 class="card-title">Featured Post Title</h2>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
-                            <a class="btn btn-primary" href="#!">Read more →</a>
+                            <div class="small text-muted"><?= date('F d,Y',strtotime($feature_post['created_at']))?></div>
+                            <h2 class="card-title"><?= $feature_post['title']?></h2>
+                            <p class="card-text"><?= substr($feature_post['description'],0,150)?>.....</p>
+                            <a class="btn btn-primary" href="detail.php?id=<?= $feature_post['id']?>">Read more →</a>
                         </div>
                     </div>
+                    <?php 
+                        }
+                    ?>
                     <!-- Nested row for non-featured blog posts-->
                     <div class="row">
                         <?php 
@@ -45,32 +72,19 @@
                             <div class="card mb-4">
                                 <a href="#!"><img class="card-img-top" src="<?php echo $post['image']?>" alt="..." /></a>
                                 <div class="card-body">
-                                    <div class="small text-muted"><?= $post['created_at']?></div>
+                                    <div class="small text-muted"><?= date('F d,Y', strtotime(
+                                     $post['created_at']))?></div>
                                     <h2 class="card-title h4"><?= $post['title']?></h2>
-                                    <p class="card-text"><?= $post['description']?></p>
-                                    <a class="btn btn-primary" href="#!">Read more →</a>
+                                    <p class="card-text"><?= substr($post['description'],0,100)?>.....</p>
+                                    <a class="btn btn-primary" href="detail.php?id=<?= $post['id'] ?>">Read more →</a>
                                 </div>
                             </div>                            
                         </div>
                         <?php
                             }
                         ?>
-                    </div>
-                    <!-- Pagination-->
-                    <nav aria-label="Pagination">
-                        <hr class="my-0" />
-                        <ul class="pagination justify-content-center my-4">
-                            <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a></li>
-                            <li class="page-item active" aria-current="page"><a class="page-link" href="#!">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#!">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#!">3</a></li>
-                            <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
-                            <li class="page-item"><a class="page-link" href="#!">15</a></li>
-                            <li class="page-item"><a class="page-link" href="#!">Older</a></li>
-                        </ul>
-                    </nav>
-                </div>
-                
+                    </div>                    
+                </div>                
 <?php 
     include "Layouts/footer.php";
 ?>
