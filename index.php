@@ -50,11 +50,11 @@
                     ?>
                     <!-- Featured blog post-->
                     <div class="card mb-4">
-                        <a href="#!"><img class="card-img-top" src="<?= $feature_post['image']?>" alt="..." /></a>
+                        <a href="#!"><img class="card-img-top" src="admin/<?= $feature_post['image']?>" alt="..." /></a>
                         <div class="card-body">
                             <div class="small text-muted"><?= date('F d,Y',strtotime($feature_post['created_at']))?></div>
                             <h2 class="card-title"><?= $feature_post['title']?></h2>
-                            <p class="card-text"><?= substr($feature_post['description'],0,150)?>.....</p>
+                            <p class="card-text"><?= substr(strip_tags($feature_post['description']),0,150)?>.....</p>
                             <a class="btn btn-primary" href="detail.php?id=<?= $feature_post['id']?>">Read more →</a>
                         </div>
                     </div>
@@ -70,12 +70,12 @@
                         <div class="col-lg-6">
                             <!-- Blog post-->
                             <div class="card mb-4">
-                                <a href="#!"><img class="card-img-top" src="<?php echo $post['image']?>" alt="..." /></a>
+                                <a href="#!"><img class="card-img-top" src="admin/<?php echo $post['image']?>" alt="..." /></a>
                                 <div class="card-body">
                                     <div class="small text-muted"><?= date('F d,Y', strtotime(
                                      $post['created_at']))?></div>
                                     <h2 class="card-title h4"><?= $post['title']?></h2>
-                                    <p class="card-text"><?= substr($post['description'],0,100)?>.....</p>
+                                    <p class="card-text"><?= substr(strip_tags($post['description']),0,100)?>.....</p>
                                     <a class="btn btn-primary" href="detail.php?id=<?= $post['id'] ?>">Read more →</a>
                                 </div>
                             </div>                            
