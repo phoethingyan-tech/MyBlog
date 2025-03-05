@@ -2,7 +2,7 @@
     include "../layouts/nav_sidebar.php";
 
     include "../../dbconnect.php";
-    $sql = "SELECT users.*, roles.name as u_role FROM users INNER JOIN roles ON users.role_id = roles.id";
+    $sql = "SELECT users.*, roles.name as u_role FROM users INNER JOIN roles ON users.role_id = roles.id ORDER BY id DESC";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $users = $stmt->fetchAll();

@@ -21,6 +21,16 @@
             ['view', ['fullscreen', 'codeview', 'help']]
             ]
         });
+
+        //post ထဲက delete ကို နှိပ်ရင် အလုပ်လုပ်မယ့် JS Code
+        $(document).ready(function() {
+            $('tbody').on('click','.delete',function(){
+                let id = $(this).data('id');
+                // alert(id);
+                $('#id').val(id);
+                $('#deleteModal').modal('show');
+            })
+        })
     </script>
     </body>
 </html>
