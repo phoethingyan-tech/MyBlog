@@ -24,6 +24,7 @@
         $user_id = 1;
         $description = $_POST['description'];
 
+
         // code for image upload database
         $img_array = $_FILES['image'];
         // var_dump($_FILES['image']);
@@ -34,18 +35,20 @@
             $tmp_name = $img_array['tmp_name'];
             move_uploaded_file($tmp_name, $img_path);
             $image = 'images/'.$img_array['name']; // images/eg.png //database လဲထည့်မည်
+        } else {
+            $image = $_POST['old_image'];
         }
 
-        // echo "$title, $category_id, $description";
-        $sql = "INSERT INTO posts (title,category_id,user_id, description, image) VALUES(:title,:category_id,:user_id,:description,:image)";
+        $sql = "UPDATE posts SET title=:title, category_id=:category_id, user_id=:user_id, description=:description, image=:image WHERE id=:id";
         $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id',$id);
         $stmt->bindParam(':title',$title);
         $stmt->bindParam(':category_id',$category_id);
         $stmt->bindParam(':user_id',$user_id);
         $stmt->bindParam(':description',$description);
         $stmt->bindParam(':image',$image);
         $stmt->execute();
-
+        
         header("location: index.php");
     }
 
@@ -80,8 +83,25 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="image" class="form-label">Image</label>
-                        <input type="file" accept="image/*" name="image" id="image" class="form-control">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="image-tab" data-bs-toggle="tab" data-bs-target="#image-tab-pane" type="button" role="tab" aria-controls="image-tab-pane" aria-selected="true">Image</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="new_image-tab" data-bs-toggle="tab" data-bs-target="#new_image-tab-pane" type="button" role="tab" aria-controls="new_image-tab-pane" aria-selected="false">New Image</button>
+                            </li>
+                        </ul>
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="image-tab-pane" role="tabpanel" aria-labelledby="image-tab" tabindex="0">
+                                    <img src="../<?= $post['image']?>" alt="images" width="150" height="150" class="my-3">
+                                    <input type="hidden" name="old_image" id="" value="<?= $post['image']?>">
+                                </div>
+                                <div class="tab-pane fade" id="new_image-tab-pane" role="tabpanel" aria-labelledby="new_image-tab" tabindex="0">
+                                    <input type="file" accept="image/*" name="image" id="image" class="form-control my-3">
+                                </div>                                
+                            </div>
+
+                        
                     </div>
 
                     <div class="mb-4">
@@ -90,7 +110,7 @@
                     </div>
 
                     <div class="d-grid gap-2">
-                        <button class="btn btn-primary" type="submit">Save</button>
+                        <button class="btn btn-warning" type="submit">Update</button>
                     </div>
                 </form>                
             </div>
