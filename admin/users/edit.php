@@ -1,4 +1,8 @@
 <?php
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+
+    
     include "../layouts/nav_sidebar.php";
 
     include "../../dbconnect.php";
@@ -33,11 +37,14 @@
             $tmp_name = $img_array['tmp_name'];
             move_uploaded_file($tmp_name, $img_path);
             $profile = 'profiles/'.$img_array['name']; // profile/eg.png //database လဲထည့်မည်
+        }else {
+            $profile = $_POST['old_profile'];   //old_profile data carry
         }
 
-        //  echo "$name, $email, $password";
-        $sql = "INSERT INTO users (name,profile,email, password, role_id) VALUES(:name, :profile, :email, :password, :role_id)";
+        // code for profile image edit or update
+        $sql = "UPDATE users SET name=:name, profile=:profile, email=:email, password=:password, role_id=:role_id WHERE id=:id";
         $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id',$id);
         $stmt->bindParam(':name',$name);
         $stmt->bindParam(':profile',$profile);
         $stmt->bindParam(':email',$email);
@@ -63,9 +70,26 @@
                         <input type="text" name="name" id="name" class="form-control" value="<?= $user['name']?>">
                     </div>
 
+
+                    <!-- code for profile image edit -->
                     <div class="mb-4">
-                        <label for="profile" class="form-label">Profile</label>
-                        <input type="file" accept="image/*" name="profile" id="profile" class="form-control">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Profile</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="new_profile-tab" data-bs-toggle="tab" data-bs-target="#new_profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">New Profile</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                                <img src="../<?=$user['profile']?>" alt="images" width="150" height="150" class="my-3">
+                                <input type="hidden" name="old_profile" id="" value="<?= $user['profile']?>">
+                            </div>
+                            <div class="tab-pane fade" id="new_profile-tab-pane" role="tabpanel" aria-labelledby="new_profile-tab" tabindex="0">
+                                <input type="file" accept="image/*" name="profile" id="profile" class="form-control my-3">
+                            </div>
+                        </div>                         
                     </div>
 
                     <div class="mb-4">
@@ -94,7 +118,7 @@
                     </div>
 
                     <div class="d-grid gap-2">
-                        <button class="btn btn-primary" type="submit">Save</button>
+                        <button class="btn btn-primary" type="submit">Update</button>
                     </div>
                 </form>                
             </div>

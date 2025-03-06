@@ -3,7 +3,7 @@
 
     include "../../dbconnect.php";
 
-    //index edit button data to update
+    //Index page get id to edit page
     $id = $_GET['id'];
     $sql = "SELECT * FROM roles WHERE id = :id";
     $stmt = $conn->prepare($sql);
@@ -12,12 +12,14 @@
     $role = $stmt->fetch();
     // var_dump($post);
     
-    // This code for data input
+    // This code for data Update
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $name = $_POST['name'];
-        //  echo "$name";
-        $sql = "INSERT INTO roles (name) VALUES(:name)";
+
+        // code for update
+        $sql = "UPDATE roles SET name=:name WHERE id=:id";
         $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id',$id);
         $stmt->bindParam(':name',$name);
         $stmt->execute();
 

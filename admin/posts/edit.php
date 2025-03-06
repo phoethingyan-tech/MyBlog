@@ -8,7 +8,7 @@
     $categories = $stmt->fetchAll();
 
 
-    //index edit button data to update
+    //Index page get id to edit page
     $id = $_GET['id'];
     $sql = "SELECT * FROM posts WHERE id = :id";
     $stmt = $conn->prepare($sql);
@@ -17,7 +17,7 @@
     $post = $stmt->fetch();
     // var_dump($post);
 
-    // This code for data input
+    // This code for data Update
     if($_SERVER['REQUEST_METHOD'] == 'POST') {        
         $title = $_POST['title'];
         $category_id = $_POST['category_id'];
@@ -36,8 +36,10 @@
             move_uploaded_file($tmp_name, $img_path);
             $image = 'images/'.$img_array['name']; // images/eg.png //database လဲထည့်မည်
         } else {
-            $image = $_POST['old_image'];
+            $image = $_POST['old_image']; //old_img data carry
         }
+
+        //code for update data
 
         $sql = "UPDATE posts SET title=:title, category_id=:category_id, user_id=:user_id, description=:description, image=:image WHERE id=:id";
         $stmt = $conn->prepare($sql);

@@ -3,7 +3,7 @@
 
     include "../../dbconnect.php";
 
-    //index edit button data to update
+    //Index page get id to edit page
     $id = $_GET['id'];
     $sql = "SELECT * FROM categories WHERE id = :id";
     $stmt = $conn->prepare($sql);
@@ -12,15 +12,16 @@
     $category = $stmt->fetch();
     // var_dump($post);
     
-    // This code for data input
+    // This code for data update
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $name = $_POST['name'];
         //  echo "$name";
-        $sql = "INSERT INTO categories (name) VALUES(:name)";
+        $sql = "UPDATE categories SET name=:name WHERE id=:id";
         $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':id',$id);
         $stmt->bindParam(':name',$name);
         $stmt->execute();
-
+        
         header("location: index.php");
     }
 
