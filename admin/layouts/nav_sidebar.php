@@ -24,8 +24,16 @@
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Dashboard</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../posts/">Posts</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../categories/">Categories</a>
+                    
+                    <!-- to select for author -->
+                    <?php 
+                        if($_SESSION['user_role'] == 'admin') {
+                    ?>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../users/">Users</a>
                     <a class="list-group-item list-group-item-action list-group-item-light p-3" href="../roles/">Roles</a>
+                    <?php 
+                        }
+                    ?>
                 </div>
             </div>
             <!-- Page content wrapper-->
@@ -40,7 +48,7 @@
                                 <li class="nav-item active"><a class="nav-link" href="#!">Home</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#!">Link</a></li>
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?= $_SESSION['user_name'] ?></a>
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                         <a class="dropdown-item" href="../logout.php">Logout</a>
                                     </div>

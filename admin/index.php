@@ -1,4 +1,5 @@
 <?php
+   
     include "layouts/nav_sidebar.php";
 ?>
                 <!-- Page content-->

@@ -1,4 +1,7 @@
 <?php
+ //code for login status check
+ session_start();
+ if($_SESSION['user_id'] && $_SESSION['user_role'] =='admin') {
     include "../layouts/nav_sidebar.php";
 
     include "../../dbconnect.php";
@@ -97,4 +100,7 @@
 
 <?php
     include "../layouts/footer.php";
+} else {
+    header("location: ../posts/index.php"); //code for login status check
+}
 ?>

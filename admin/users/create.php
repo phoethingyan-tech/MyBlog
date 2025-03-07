@@ -1,4 +1,8 @@
 <?php
+//code for login status check
+session_start();
+if($_SESSION['user_id'] && $_SESSION['user_role'] =='admin') {
+    
     include "../layouts/nav_sidebar.php";
 
     include "../../dbconnect.php";
@@ -11,7 +15,7 @@
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $name = $_POST['name'];
         $email = $_POST['email'];
-        $password = $_POST['password'];
+        $password = sha1($_POST['password']); //password encrypt with sha1
         $role_id = $_POST['role_id'];
 
         // code for image upload database
@@ -94,4 +98,7 @@
 
 <?php
     include "../layouts/footer.php";
+} else {
+    header("location: ../posts/index.php"); //code for login status check
+}
 ?>

@@ -1,4 +1,7 @@
 <?php
+//code for login status check
+session_start();
+if($_SESSION['user_id']) {
     include "../layouts/nav_sidebar.php";
 
     include "../../dbconnect.php";
@@ -21,7 +24,7 @@
     if($_SERVER['REQUEST_METHOD'] == 'POST') {        
         $title = $_POST['title'];
         $category_id = $_POST['category_id'];
-        $user_id = 1;
+        $user_id = $_SESSION['user_id'];
         $description = $_POST['description'];
 
 
@@ -121,4 +124,7 @@
 
 <?php
     include "../layouts/footer.php";
+} else {
+    header("location: ../login.php"); //code for login status check
+}
 ?>

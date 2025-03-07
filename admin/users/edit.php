@@ -1,8 +1,8 @@
 <?php
-    error_reporting(E_ALL);
-    ini_set('display_errors', 1);
-
-    
+//code for login status check
+session_start();
+if($_SESSION['user_id'] && $_SESSION['user_role'] =='admin') {
+       
     include "../layouts/nav_sidebar.php";
 
     include "../../dbconnect.php";
@@ -24,7 +24,14 @@
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $name = $_POST['name'];
         $email = $_POST['email'];
-        $password = $_POST['password'];
+
+        //password hide and update with data
+        if((!empty($_POST['password']))) {
+            $password = sha1($_POST['password']);   
+        } else {
+            $password = $_POST['old_password'];
+        }
+        
         $role_id = $_POST['role_id'];
 
         // code for image upload database
@@ -99,7 +106,9 @@
 
                     <div class="mb-4">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" name="password" id="password" class="form-control" value="<?= $user['password']?>">
+                        <input type="password" name="password" id="password" class="form-control">
+                        <input type="hidden" name="old_password" id="password" class="form-control" value="<?= $user['password']?>">
+
                     </div>
 
                     <div class="mb-4">
@@ -127,4 +136,7 @@
 
 <?php
     include "../layouts/footer.php";
+} else {
+    header("location: ../posts/index.php"); //code for login status check
+}
 ?>

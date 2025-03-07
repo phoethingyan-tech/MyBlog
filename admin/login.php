@@ -1,12 +1,15 @@
 <?php
     session_start();
+    if(isset($_SESSION['user_id'])) {
+        header("location: posts/index.php");
+    }else {
     include "../dbconnect.php";
     if($_SERVER['REQUEST_METHOD'] == 'POST') {
         $email = $_POST['email'];
-        $password = $_POST['password'];
+        $password = sha1($_POST['password']); //password decrypt
         // echo "$email and $password";
 
-        $sql = "SELECT * FROM users WHERE email=:email AND password=:password";
+        $sql = "SELECT users.*, roles.name as r_name FROM users INNER JOIN roles ON users.role_id = roles.id WHERE email=:email AND password=:password";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':email',$email);
         $stmt->bindParam(':password',$password);
@@ -18,7 +21,7 @@
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['name'];
             $_SESSION['user_email'] = $user['email'];
-            $_SESSION['user_role'] = $user['role'];
+            $_SESSION['user_role'] = $user['r_name'];
             $_SESSION['user_profile'] = $user['profile'];
 
             if($_SESSION['user_id']) {
@@ -66,3 +69,7 @@
     
 </body>
 </html>
+
+<?php 
+    }
+?>
